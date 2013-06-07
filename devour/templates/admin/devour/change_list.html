@@ -1,0 +1,38 @@
+{% extends "admin/change_list.html" %}
+{% load url from future %}
+{% load admin_list i18n %}
+{% load admin_urls %}
+
+{% block extrahead %}
+{{ block.super }}
+<script type="text/javascript">
+(function ($) {
+    $(document).ready(function () {
+        $('#file_import').change(function (event) {
+            $('#file_import_form').submit();
+        });
+        $('#file_import_button').click(function (event) {
+            event.preventDefault();
+            $('#file_import').trigger('click');
+        });
+    });
+})(django.jQuery);
+</script>
+{% endblock %}
+
+{% block object-tools %}
+    <form id="file_import_form" method="POST" action="{% url cl.opts|admin_urlname:'devour' %}" enctype="multipart/form-data" style="visibility:hidden">
+        {% csrf_token %}
+        <input id="file_import" type="file" name="uploaded_file" />
+    </form>
+    {{ block.super }}
+{% endblock object-tools %}
+
+{% block object-tools-items %}
+    <li>
+        <a href="" id="file_import_button" class="addlink">
+        {% blocktrans with cl.opts.verbose_name_plural as name %}Import {{ name }}{% endblocktrans %}
+        </a>
+    </li>
+    {{ block.super }}
+{% endblock object-tools-items %}
